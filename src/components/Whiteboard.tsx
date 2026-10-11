@@ -1,16 +1,11 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Stage, Layer, Line, Text as KonvaText } from 'react-konva';
 import { 
-  Square, 
-  Circle, 
   Type, 
   Eraser, 
   PenTool, 
-  Undo, 
-  Redo, 
   Trash2, 
-  Highlighter,
-  ChevronDown
+  Highlighter
 } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { cn } from '../lib/utils';
@@ -53,20 +48,34 @@ export default function Whiteboard({ strokes, onAddStroke, onClear, readOnly = f
   const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTHS[1]);
   const isDrawing = useRef(false);
   const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
   const [stageSize, setStageSize] = useState({ width: window.innerWidth, height: window.innerHeight - 100 });
 
   useEffect(() => {
-    const handleResize = () => {
-      setStageSize({ width: window.innerWidth, height: window.innerHeight - 100 });
+    const updateSize = () => {
+      if (containerRef.current) {
+        setStageSize({
+          width: containerRef.current.clientWidth || window.innerWidth,
+          height: containerRef.current.clientHeight || window.innerHeight - 100
+        });
+      }
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    const timer = setTimeout(updateSize, 150);
+    return () => {
+      window.removeEventListener('resize', updateSize);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleMouseDown = (e: any) => {
     if (readOnly || tool === 'select') return;
     
     const pos = e.target.getStage().getPointerPosition();
+    if (!pos) return;
+    
     isDrawing.current = true;
 
     if (tool === 'text') {
@@ -102,6 +111,8 @@ export default function Whiteboard({ strokes, onAddStroke, onClear, readOnly = f
     if (!isDrawing.current || !currentStroke || readOnly) return;
 
     const pos = e.target.getStage().getPointerPosition();
+    if (!pos) return;
+
     setCurrentStroke({
       ...currentStroke,
       points: [...currentStroke.points, pos.x, pos.y],
@@ -116,7 +127,7 @@ export default function Whiteboard({ strokes, onAddStroke, onClear, readOnly = f
   };
 
   return (
-    <div className="relative w-full h-full bg-white overflow-hidden touch-none">
+    <div ref={containerRef} className="relative w-full h-full bg-white overflow-hidden touch-none">
       {/* Toolbar */}
       {!readOnly && (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 p-4 bg-white/90 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-2xl">
@@ -172,7 +183,7 @@ export default function Whiteboard({ strokes, onAddStroke, onClear, readOnly = f
         onTouchStart={handleMouseDown}
         onTouchMove={handleMouseMove}
         onTouchEnd={handleMouseUp}
-        className="bg-white"
+        className="bg-white block w-full h-full"
       >
         <Layer>
           {strokes.map((stroke) => (

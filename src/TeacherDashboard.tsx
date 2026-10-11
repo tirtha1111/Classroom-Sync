@@ -7,14 +7,12 @@ import {
   User as UserIcon, 
   LogOut, 
   Plus, 
-  ChevronRight,
   BookOpen,
   Users as UsersIcon,
-  Search,
   ArrowRight
 } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
-import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
 import { useNavigate } from 'react-router-dom';
 import { cn } from './lib/utils';
@@ -27,6 +25,7 @@ export default function TeacherDashboard() {
   const [loading, setLoading] = useState(true);
   const [recentClasses, setRecentClasses] = useState<any[]>([]);
   const [stats, setStats] = useState({ today: 3, students: 24, total: 18 });
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   // Form state
   const [className, setClassName] = useState('XII - A');
@@ -80,7 +79,8 @@ export default function TeacherDashboard() {
         studentCount: 0
       };
 
-      await addDoc(collection(db, path), sessionData);
+      const sessionRef = doc(db, path, sessionId);
+      await setDoc(sessionRef, sessionData);
       navigate(`/classroom/${sessionId}`);
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, path);
@@ -103,7 +103,7 @@ export default function TeacherDashboard() {
           <SidebarLink icon={<BookOpen size={20} />} label="My Classes" />
           <SidebarLink icon={<Presentation size={20} />} label="Start Class" />
           <SidebarLink icon={<History size={20} />} label="Previous Sessions" onClick={() => navigate('/previous-classes')} />
-          <SidebarLink icon={<UserIcon size={20} />} label="Profile" />
+          <SidebarLink icon={<UserIcon size={20} />} label="Profile" onClick={() => setShowProfileModal(true)} />
         </nav>
 
         <div className="p-4 border-t border-slate-200">
@@ -249,6 +249,47 @@ export default function TeacherDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/50 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl relative"
+          >
+            <button 
+              onClick={() => setShowProfileModal(false)}
+              className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-600 rounded-full"
+            >
+              ✕
+            </button>
+            <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-700 text-2xl font-bold mb-6 mx-auto">
+              {user?.name.charAt(0)}
+            </div>
+            <h2 className="text-2xl font-bold text-slate-900 text-center mb-1">{user?.name}</h2>
+            <p className="text-sm text-slate-500 text-center mb-6 capitalize">{user?.role} Account</p>
+            
+            <div className="space-y-4 bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-6">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Email Address</p>
+                <p className="text-sm font-semibold text-slate-900">{user?.email}</p>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Role / Permissions</p>
+                <p className="text-sm font-semibold text-slate-900 capitalize">{user?.role} (Full Access)</p>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => setShowProfileModal(false)}
+              className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+            >
+              Close Profile
+            </button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

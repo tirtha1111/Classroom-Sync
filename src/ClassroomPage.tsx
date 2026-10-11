@@ -101,9 +101,16 @@ export default function ClassroomPage() {
 
     const sessionPath = `sessions/${id}`;
     try {
-      const startedAt = session.startedAt?.toDate();
-      const endedAt = new Date();
-      const duration = startedAt ? Math.round((endedAt.getTime() - startedAt.getTime()) / 60000) : 0;
+      let duration = 45;
+      if (session?.startedAt?.toDate) {
+        try {
+          const startedAt = session.startedAt.toDate();
+          const endedAt = new Date();
+          duration = Math.max(1, Math.round((endedAt.getTime() - startedAt.getTime()) / 60000));
+        } catch (e) {
+          // fallback duration
+        }
+      }
 
       await updateDoc(doc(db, sessionPath), {
         status: 'completed',
@@ -112,6 +119,7 @@ export default function ClassroomPage() {
       });
       navigate('/teacher');
     } catch (error) {
+      console.error('Error ending class:', error);
       handleFirestoreError(error, OperationType.UPDATE, sessionPath);
     }
   };
