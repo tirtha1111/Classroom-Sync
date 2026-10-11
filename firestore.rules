@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- Entity Validation ---
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'role']) &&
+             data.keys().hasOnly(['id', 'name', 'email', 'role', 'createdAt']) &&
+             data.id == request.auth.uid &&
+             data.name is string && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 100 &&
+             data.role in ['teacher', 'student'];
+    }
+
+    function isValidSession(data) {
+      return data.keys().hasAll(['id', 'className', 'subject', 'topic', 'teacherId', 'status', 'startedAt']) &&
+             data.keys().hasOnly(['id', 'className', 'section', 'subject', 'topic', 'teacherId', 'teacherName', 'status', 'startedAt', 'endedAt', 'duration', 'studentCount']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.className is string && data.className.size() <= 50 &&
+             data.subject is string && data.subject.size() <= 50 &&
+             data.topic is string && data.topic.size() <= 100 &&
+             data.teacherId == request.auth.uid &&
+             data.status in ['live', 'completed'];
+    }
+
+    function isValidStroke(data) {
+      return data.keys().hasAll(['id', 'sessionId', 'type', 'createdBy', 'createdAt']) &&
+             data.keys().hasOnly(['id', 'sessionId', 'type', 'points', 'color', 'strokeWidth', 'opacity', 'text', 'x', 'y', 'createdBy', 'createdAt']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.sessionId is string && data.sessionId.size() <= 128 &&
+             data.type in ['pen', 'highlighter', 'eraser', 'text'] &&
+             data.createdBy == request.auth.uid;
+    }
+
+    // --- Matches ---
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && resource.data.id == request.auth.uid;
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming()) && 
+                    incoming().role == existing().role;
+    }
+
+    match /sessions/{sessionId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (
+        resource.data.teacherId == request.auth.uid || 
+        resource.data.status == 'live' || 
+        resource.data.status == 'completed'
+      );
+      allow create: if isSignedIn() && isValidSession(incoming());
+      allow update: if isSignedIn() && existing().teacherId == request.auth.uid && 
+                    isValidSession(incoming()) &&
+                    (
+                      (existing().status == 'live' && incoming().status == 'completed' && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'endedAt', 'duration'])) ||
+                      (existing().status == 'live' && incoming().status == 'live' && incoming().diff(existing()).affectedKeys().hasOnly(['studentCount', 'topic']))
+                    );
+    }
+
+    match /sessions/{sessionId}/strokes/{strokeId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && 
+                    get(/databases/$(database)/documents/sessions/$(sessionId)).data.status == 'live' &&
+                    get(/databases/$(database)/documents/sessions/$(sessionId)).data.teacherId == request.auth.uid &&
+                    isValidStroke(incoming());
+      allow delete: if isSignedIn() && 
+                    get(/databases/$(database)/documents/sessions/$(sessionId)).data.teacherId == request.auth.uid;
+    }
+  }
+}

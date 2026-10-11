@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with basic profile info.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["teacher", "student"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "ClassroomSession": {
+      "title": "Classroom Session",
+      "description": "A live or completed classroom session.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "className": { "type": "string" },
+        "section": { "type": "string" },
+        "subject": { "type": "string" },
+        "topic": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "teacherName": { "type": "string" },
+        "status": { "type": "string", "enum": ["live", "completed"] },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "endedAt": { "type": "string", "format": "date-time" },
+        "duration": { "type": "number" },
+        "studentCount": { "type": "number" }
+      },
+      "required": ["id", "className", "subject", "topic", "teacherId", "status", "startedAt"]
+    },
+    "WhiteboardStroke": {
+      "title": "Whiteboard Stroke",
+      "description": "A single stroke or text element on the whiteboard.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "type": { "type": "string", "enum": ["pen", "highlighter", "eraser", "text"] },
+        "points": { "type": "array", "items": { "type": "number" } },
+        "color": { "type": "string" },
+        "strokeWidth": { "type": "number" },
+        "opacity": { "type": "number" },
+        "text": { "type": "string" },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "sessionId", "type", "createdBy", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user profile data."
+    },
+    "/sessions/{sessionId}": {
+      "schema": "ClassroomSession",
+      "description": "Stores classroom session metadata."
+    },
+    "/sessions/{sessionId}/strokes/{strokeId}": {
+      "schema": "WhiteboardStroke",
+      "description": "Stores individual whiteboard strokes for real-time sync."
+    }
+  }
+}
