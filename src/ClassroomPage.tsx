@@ -138,9 +138,9 @@ export default function ClassroomPage() {
   const isTeacher = user?.id === session?.teacherId;
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 overflow-hidden font-sans">
-      {/* Top Bar */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-30">
+    <div className="h-screen flex flex-col bg-slate-950 overflow-hidden font-sans text-slate-100">
+      {/* Futuristic Floating Glassy Navbar */}
+      <header className="sticky top-6 mx-6 z-50 bg-slate-900/70 backdrop-blur-2xl border border-white/10 px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-500/10 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate(isTeacher ? '/teacher' : '/student')}
