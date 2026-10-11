@@ -12,7 +12,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
-import { collection, query, where, getDocs, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
 import { useNavigate } from 'react-router-dom';
 import { cn } from './lib/utils';
@@ -31,31 +31,27 @@ export default function StudentDashboard() {
 
     const path = 'sessions';
 
-    // Listen for live classes
-    const liveQuery = query(
-      collection(db, path),
-      where('status', '==', 'live'),
-      where('className', '==', 'XII - A') // Hardcoded for demo
-    );
-
-    const unsubscribeLive = onSnapshot(liveQuery, (snapshot) => {
-      const live = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Listen for live classes using single-field query + JS filter
+    const unsubscribeLive = onSnapshot(collection(db, path), (snapshot) => {
+      const allSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+      const live = allSessions.filter(s => s.status === 'live');
       setLiveClasses(live);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, path);
     });
 
-    // Fetch recent classes
+    // Fetch recent classes with JS filter and sort
     async function fetchRecent() {
       try {
-        const recentQuery = query(
-          collection(db, path),
-          where('status', '==', 'completed'),
-          where('className', '==', 'XII - A'),
-          orderBy('startedAt', 'desc')
-        );
-        const snapshot = await getDocs(recentQuery);
-        const recent = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const snapshot = await getDocs(collection(db, path));
+        const allSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+        const recent = allSessions
+          .filter(s => s.status === 'completed')
+          .sort((a, b) => {
+            const timeA = a.startedAt?.toMillis ? a.startedAt.toMillis() : 0;
+            const timeB = b.startedAt?.toMillis ? b.startedAt.toMillis() : 0;
+            return timeB - timeA;
+          });
         setRecentClasses(recent);
       } catch (error) {
         handleFirestoreError(error, OperationType.LIST, path);
@@ -199,7 +195,7 @@ export default function StudentDashboard() {
                     <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-[11px] font-bold text-slate-400">
                       <div className="flex items-center gap-1.5">
                         <Calendar size={12} />
-                        {format(session.startedAt.toDate(), 'MMM d, yyyy')}
+                        {session.startedAt?.toDate ? format(session.startedAt.toDate(), 'MMM d, yyyy') : 'Recently'}
                       </div>
                       <div className="flex items-center gap-1.5 text-slate-500">
                         <Clock size={12} />

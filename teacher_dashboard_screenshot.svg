@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="primary" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="675" fill="#f8fafc"/>
+
+  <!-- Sidebar -->
+  <rect width="260" height="675" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="40" cy="40" r="16" fill="url(#primary)"/>
+  <text x="40" y="45" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" fill="#ffffff" text-anchor="middle">CS</text>
+  <text x="70" y="46" font-family="system-ui, sans-serif" font-weight="bold" font-size="16" fill="#0f172a">Classroom Sync</text>
+
+  <!-- Nav Links -->
+  <rect x="16" y="90" width="228" height="40" rx="10" fill="#e0e7ff"/>
+  <text x="56" y="115" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" fill="#4f46e5">Dashboard</text>
+  
+  <text x="56" y="165" font-family="system-ui, sans-serif" font-weight="500" font-size="14" fill="#64748b">My Classes</text>
+  <text x="56" y="215" font-family="system-ui, sans-serif" font-weight="500" font-size="14" fill="#64748b">Start Class</text>
+  <text x="56" y="265" font-family="system-ui, sans-serif" font-weight="500" font-size="14" fill="#64748b">Previous Sessions</text>
+
+  <!-- Teacher Profile at Bottom of Sidebar -->
+  <rect x="16" y="580" width="228" height="70" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="46" cy="615" r="18" fill="#c7d2fe"/>
+  <text x="46" y="620" font-family="system-ui, sans-serif" font-weight="bold" font-size="12" fill="#4f46e5" text-anchor="middle">MS</text>
+  <text x="78" y="608" font-family="system-ui, sans-serif" font-weight="bold" font-size="13" fill="#0f172a">Mr. Sharma</text>
+  <text x="78" y="626" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Teacher</text>
+
+  <!-- Main Content Area -->
+  <text x="310" y="60" font-family="system-ui, sans-serif" font-weight="bold" font-size="28" fill="#0f172a">Good afternoon, Teacher</text>
+  <text x="310" y="85" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">Ready for your next session?</text>
+
+  <!-- Start Class Card -->
+  <g transform="translate(310, 120)">
+    <rect width="520" height="490" rx="20" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="30" y="45" font-family="system-ui, sans-serif" font-weight="bold" font-size="18" fill="#0f172a">Start a Class</text>
+
+    <!-- Form Fields -->
+    <text x="30" y="90" font-family="system-ui, sans-serif" font-weight="bold" font-size="13" fill="#334155">Class</text>
+    <rect x="30" y="105" width="220" height="44" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="50" y="132" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">XII - A</text>
+
+    <text x="270" y="90" font-family="system-ui, sans-serif" font-weight="bold" font-size="13" fill="#334155">Subject</text>
+    <rect x="270" y="105" width="220" height="44" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="290" y="132" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">Physics</text>
+
+    <text x="30" y="180" font-family="system-ui, sans-serif" font-weight="bold" font-size="13" fill="#334155">Topic</text>
+    <rect x="30" y="195" width="460" height="44" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="50" y="222" font-family="system-ui, sans-serif" font-size="14" fill="#0f172a">Electromagnetic Induction</text>
+
+    <!-- Start Button -->
+    <rect x="30" y="270" width="460" height="52" rx="12" fill="url(#primary)"/>
+    <text x="260" y="302" font-family="system-ui, sans-serif" font-weight="bold" font-size="15" fill="#ffffff" text-anchor="middle">START CLASS</text>
+  </g>
+
+  <!-- Right Stats Column -->
+  <g transform="translate(860, 120)">
+    <rect width="300" height="130" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="24" y="40" font-family="system-ui, sans-serif" font-weight="500" font-size="13" fill="#64748b">Classes Today</text>
+    <text x="24" y="85" font-family="system-ui, sans-serif" font-weight="bold" font-size="32" fill="#0f172a">3</text>
+    <circle cx="250" cy="55" r="24" fill="#eff6ff"/>
+    <text x="250" y="61" font-family="system-ui, sans-serif" font-size="16" fill="#3b82f6" text-anchor="middle">📚</text>
+
+    <g transform="translate(0, 150)">
+      <rect width="300" height="130" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="24" y="40" font-family="system-ui, sans-serif" font-weight="500" font-size="13" fill="#64748b">Students Connected</text>
+      <text x="24" y="85" font-family="system-ui, sans-serif" font-weight="bold" font-size="32" fill="#0f172a">24</text>
+      <circle cx="250" cy="55" r="24" fill="#ecfdf5"/>
+      <text x="250" y="61" font-family="system-ui, sans-serif" font-size="16" fill="#10b981" text-anchor="middle">👥</text>
+    </g>
+
+    <g transform="translate(0, 300)">
+      <rect width="300" height="130" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+      <text x="24" y="40" font-family="system-ui, sans-serif" font-weight="500" font-size="13" fill="#64748b">Previous Sessions</text>
+      <text x="24" y="85" font-family="system-ui, sans-serif" font-weight="bold" font-size="32" fill="#0f172a">18</text>
+      <circle cx="250" cy="55" r="24" fill="#e0e7ff"/>
+      <text x="250" y="61" font-family="system-ui, sans-serif" font-size="16" fill="#4f46e5" text-anchor="middle">📁</text>
+    </g>
+  </g>
+</svg>

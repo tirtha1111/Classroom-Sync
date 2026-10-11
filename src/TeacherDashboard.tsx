@@ -14,7 +14,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useAuth } from './contexts/AuthContext';
-import { collection, query, where, getDocs, addDoc, serverTimestamp, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './firebase';
 import { useNavigate } from 'react-router-dom';
 import { cn } from './lib/utils';
@@ -38,15 +38,20 @@ export default function TeacherDashboard() {
       if (!user) return;
       const path = 'sessions';
       try {
-        const q = query(
-          collection(db, path),
-          where('teacherId', '==', user.id),
-          orderBy('startedAt', 'desc'),
-          limit(5)
-        );
-        const snapshot = await getDocs(q);
-        const classes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setRecentClasses(classes);
+        const snapshot = await getDocs(collection(db, path));
+        const allSessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+        
+        // Filter by teacher and sort in JS to avoid composite index errors
+        const teacherSessions = allSessions
+          .filter(s => s.teacherId === user.id)
+          .sort((a, b) => {
+            const timeA = a.startedAt?.toMillis ? a.startedAt.toMillis() : 0;
+            const timeB = b.startedAt?.toMillis ? b.startedAt.toMillis() : 0;
+            return timeB - timeA;
+          })
+          .slice(0, 5);
+
+        setRecentClasses(teacherSessions);
       } catch (error) {
         handleFirestoreError(error, OperationType.LIST, path);
       } finally {
@@ -210,7 +215,7 @@ export default function TeacherDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-bold text-slate-900">
-                          {session.startedAt ? format(session.startedAt.toDate(), 'MMM d, h:mm a') : 'Just now'}
+                          {session.startedAt?.toDate ? format(session.startedAt.toDate(), 'MMM d, h:mm a') : 'Just now'}
                         </p>
                         <p className={cn("text-xs font-bold capitalize", session.status === 'live' ? "text-emerald-600" : "text-slate-400")}>
                           {session.status}
