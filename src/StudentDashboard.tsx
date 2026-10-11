@@ -17,6 +17,7 @@ import { db, handleFirestoreError, OperationType } from './firebase';
 import { useNavigate } from 'react-router-dom';
 import { cn } from './lib/utils';
 import { format } from 'date-fns';
+import { Logo } from './components/Logo';
 
 export default function StudentDashboard() {
   const { user, logout } = useAuth();
@@ -71,12 +72,7 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-slate-950 font-sans selection:bg-indigo-500 selection:text-white text-slate-100">
       {/* Futuristic Floating Glassy Navbar */}
       <header className="sticky top-6 mx-6 z-50 bg-slate-900/70 backdrop-blur-2xl border border-white/10 px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-500/10 flex items-center justify-between max-w-7xl lg:mx-auto">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <GraduationCap className="text-white w-5 h-5" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">Classroom Sync</span>
-        </div>
+        <Logo />
 
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-white/5 rounded-xl border border-white/10 backdrop-blur-md">

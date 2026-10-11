@@ -18,6 +18,7 @@ import {
   orderBy
 } from 'firebase/firestore';
 import Whiteboard, { Stroke } from './components/Whiteboard';
+import { Logo } from './components/Logo';
 import { format } from 'date-fns';
 
 export default function SessionViewPage() {
@@ -75,13 +76,11 @@ export default function SessionViewPage() {
           >
             <ChevronLeft size={24} />
           </button>
-          <div className="flex items-center gap-3 border-l border-slate-100 pl-4">
-            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600">
-              <History size={24} />
-            </div>
+          <div className="flex items-center gap-4 border-l border-white/10 pl-4">
+            <Logo size="small" />
             <div>
-              <h1 className="text-lg font-bold text-slate-900">{session?.topic}</h1>
-              <p className="text-xs font-medium text-slate-500">
+              <h1 className="text-lg font-bold text-white">{session?.topic}</h1>
+              <p className="text-xs font-medium text-slate-400">
                 {session?.subject} • {session?.className} • Archived Session
               </p>
             </div>

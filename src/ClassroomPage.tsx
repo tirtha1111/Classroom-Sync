@@ -23,6 +23,7 @@ import {
   where
 } from 'firebase/firestore';
 import Whiteboard, { Stroke } from './components/Whiteboard';
+import { Logo } from './components/Logo';
 import { cn } from './lib/utils';
 import { motion } from 'framer-motion';
 
@@ -148,18 +149,16 @@ export default function ClassroomPage() {
           >
             <ChevronLeft size={24} />
           </button>
-          <div className="flex items-center gap-3 border-l border-slate-100 pl-4">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
-              <Presentation size={24} />
-            </div>
+          <div className="flex items-center gap-4 border-l border-white/10 pl-4">
+            <Logo size="small" />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-slate-900">{session?.topic}</h1>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-[10px] font-bold uppercase tracking-wider">
+                <h1 className="text-lg font-bold text-white">{session?.topic}</h1>
+                <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded text-[10px] font-bold uppercase tracking-wider border border-emerald-500/30">
                   ● LIVE
                 </span>
               </div>
-              <p className="text-xs font-medium text-slate-500">
+              <p className="text-xs font-medium text-slate-400">
                 {session?.subject} • {session?.className} • {session?.teacherName}
               </p>
             </div>
@@ -167,9 +166,9 @@ export default function ClassroomPage() {
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full border border-slate-100">
-            <Users size={16} className="text-slate-400" />
-            <span className="text-xs font-bold text-slate-600">{session?.studentCount || 12} students connected</span>
+          <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 bg-white/5 rounded-full border border-white/10 backdrop-blur-md">
+            <Users size={16} className="text-indigo-400" />
+            <span className="text-xs font-bold text-slate-300">{session?.studentCount || 12} students connected</span>
           </div>
 
           {isTeacher ? (

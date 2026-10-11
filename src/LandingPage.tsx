@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { GraduationCap, Presentation, Users, Clock, ArrowRight } from 'lucide-react';
 import { useAuth, UserRole } from './contexts/AuthContext';
 import { cn } from './lib/utils';
+import { Logo } from './components/Logo';
 
 export default function LandingPage() {
   const { loginAsDemo } = useAuth();
@@ -15,12 +16,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white text-slate-100">
       {/* Futuristic Floating Glassy Navbar */}
       <header className="fixed top-6 left-6 right-6 z-50 bg-white/10 backdrop-blur-2xl border border-white/20 px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-500/10 flex items-center justify-between max-w-7xl mx-auto">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <Presentation className="text-white w-5 h-5" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">Classroom Sync</span>
-        </div>
+        <Logo />
         
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
           <a href="#features" className="hover:text-white transition-colors">Features</a>
